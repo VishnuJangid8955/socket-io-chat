@@ -19,13 +19,13 @@ let io;
 
 if(config.get('env') === 'production'){
 
-    const options = {
-        key: fs.readFileSync(path.join(__dirname, `../../${config.get('server.https.privateKey')}`)),
-        cert: fs.readFileSync(path.join(__dirname, `../../${config.get('server.https.certificate')}`))
-    };
+    // const options = {
+    //     key: fs.readFileSync(path.join(__dirname, `../../${config.get('server.https.privateKey')}`)),
+    //     cert: fs.readFileSync(path.join(__dirname, `../../${config.get('server.https.certificate')}`))
+    // };
 
     //create https server
-    server = https.createServer(options, app);
+    server = http.createServer(app);
 } else {
 
     //create http server
