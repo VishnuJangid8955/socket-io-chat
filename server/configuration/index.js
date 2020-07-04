@@ -16,7 +16,7 @@ const config = convict({
     // },
     server: {
         enableHttpsServer: {
-            doc: 'Enable https server',
+            doc: 'Enable https server.',
             format: Boolean,
             default: false
         },
@@ -83,8 +83,5 @@ const config = convict({
         }
     }
 });
-
-// Load environment dependent configuration
-let env = config.get('env');
 
 module.exports = config;

@@ -25,7 +25,7 @@ if(config.get('env') === 'production'){
     // };
 
     //create https server
-    server = http.createServer(app);
+    server = https.createServer(app);
 } else {
 
     //create http server
