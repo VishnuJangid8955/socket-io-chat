@@ -16,7 +16,6 @@ let server;
 
 let io;
 
-
 if(config.get('env') === 'production'){
 
     // const options = {
