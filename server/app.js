@@ -53,3 +53,4 @@ server.listen(app.get('port'), ()=>{
     console.info(`Environment: ${config.get('env')}`);
 });
 
+module.exports = app;

@@ -24,14 +24,14 @@ const config = convict({
             port: {
                 doc: "Http port to bind.",
                 format: Number,
-                default: 3002
+                default: 3003
             }
         },
         https: {
             port: {
                 doc: "Http port to bind.",
                 format: Number,
-                default: 3002,
+                default: 3003,
                 env: 'HTTPSPORT'
             },
             privateKey: {
