@@ -2,6 +2,7 @@
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
+const path = require('path');
 
 //External Imports
 const express = require('express');
@@ -15,6 +16,7 @@ let app = express();
 let server;
 
 let io;
+
 
 if(config.get('env') === 'production'){
 
@@ -43,7 +45,7 @@ require('./middlewares')(app, express, __dirname);
 require('./routers')(app);
 
 app.get('/',(req, res) =>{
-    res.sendFile('/views/index.html');
+    res.sendFile(path.join(__dirname, '/views/index.html'));
 })
 
 app.set('port', config.get('server.http.port'));

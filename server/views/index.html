@@ -1,28 +1,81 @@
 <html>
 
 <head>
+    <link rel="icon" href="/images.png">
     <title>IO Chat</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
     <style>
-        body{
+        body {
             margin-top: 30px;
         }
-        #messageArea{
+
+        #messageArea {
             display: none;
+            margin-bottom: 50px;
+        }
+
+        .msgUserName {
+            color: #ff008c9c;
+        }
+
+        .text {
+            font-weight: 100;
+            display: block;
+            /* or inline-block */
+            text-overflow: ellipsis;
+            word-wrap: break-word;
+            overflow: hidden;
+            max-height: 100.6em;
+            line-height: 1.8em;
+            color: #f47878;
+        }
+
+        h4 {
+            font-size: smaller;
+            text-align: -webkit-right;
+            margin-top: -4px;
+            margin-bottom: -10px;
+            color: #ff008c9c;
+        }
+
+        .well {
+            background-color: #9fff7f;
+        }
+
+        .uploadImage {
+            margin-bottom: 20px;
+        }
+
+        img {
+            width: 25%;
+            height: 25%;
+        }
+
+        span {
+            font-size: 20px;
+        }
+
+        #disable-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
+    <div class="container" id="disable-select">
         <div id="userFormArea" class="row">
             <div class="col-md-12">
                 <form id="userForm">
                     <div class="form-group">
                         <label>Enter Username</label>
                         <input class="form-control" id="username" />
-                        <br/>
+                        <br />
                         <input type="submit" class="btn btn-primary" value="Login" />
                     </div>
                 </form>
@@ -38,59 +91,124 @@
             <div class="col-md-8">
                 <div class="chat" id="chat"></div>
 
-                <form id="messageForm">
+                <form class="col-md-4" id="messageForm">
                     <div class="form-group">
                         <label>Enter Message</label>
                         <textarea class="form-control" id="message"></textarea>
-                        <br/>
+                        <br />
                         <input type="submit" class="btn btn-primary" value="Send Message" />
                     </div>
                 </form>
+                <form class="col-md-4" id="imageForm">
+                    <div class="form-group">
+                        <label>Image Url</label>
+                        <textarea class="form-control" id="imageUrl"></textarea>
+                        <br />
+                        <input type="submit" class="btn btn-primary" value="Send Image" />
+                    </div>
+                </form>
+                <form class="col-md-4" id="emojiForm">
+                    <div class="form-group">
+                        <label>Emojis</label><br />
+                        <div id="emojis">
+                            <button onclick="myEmojis()">Get Emojis</button>
+                        </div>
+                    </div>
+                </form>
+                <a href="/socket/upload_image_view" target="_blank" class="uploadImage">Update Image To Send</a>
             </div>
         </div>
     </div>
     <script>
-        $(function(){
+        $(function () {
             var socket = io.connect();
             var $messageForm = $('#messageForm');
+            var $imageForm = $('#imageForm');
             var $message = $('#message');
             var $chat = $('#chat');
             var $messageArea = $('#messageArea');
             var $userFormArea = $('#userFormArea');
             var $userForm = $('#userForm');
+            var $imageUrl = $('#imageUrl');
             var $users = $('#users');
             var $username = $('#username');
 
-            $messageForm.submit(function(e){
+            $messageForm.submit(function (e) {
                 e.preventDefault();
                 socket.emit('send message', $message.val());
                 $message.val('');
             })
 
-            socket.on('new message', function(data){
-                $chat.append('<div class ="well"><strong>' +data.user+ '</strong>: '+data.msg+ '</div>');
+            $imageForm.submit(function (e) {
+                e.preventDefault();
+                socket.emit('send image url', $imageUrl.val());
+                $imageUrl.val('');
             })
 
-            $userForm.submit(function(e){
+            socket.on('new message', function (data) {
+                if(data.user === undefined){
+                    alert("Page is reload because of connection lost");
+                    location.reload()
+                }
+                $chat.append('<div class ="well">  <strong class="msgUserName">' + data.user +
+                    '</strong> <label class="text"> ' + data.msg + '</label><h4>' +
+                    moment().format('MMM DD hh:mm:ss a') + '</h4></div>');
+            })
+
+            socket.on('new image', function (data) {
+                if(data.user === undefined){
+                    alert("Page is reload because of connection lost");
+                    location.reload()
+                }
+                $chat.append('<div class ="well">  <strong class="msgUserName">' + data.user +
+                    '</strong><a href="' + data.image_url + '" target="_blank"> <img src="' + data.image_url + '" alt="image"></a><h4>' +
+                    moment().format('MMM DD hh:mm:ss a') + '</h4></div>');
+            })
+
+            $userForm.submit(function (e) {
                 e.preventDefault();
-                socket.emit('new user', $username.val(), function(data){
-                    if(data){
+                socket.emit('new user', $username.val(), function (data) {
+                    if (data) {
                         $userFormArea.hide();
                         $messageArea.show();
-
                     }
                 });
                 $username.val('');
             })
 
-            socket.on('get users', function(data){
+            socket.on('get users', function (data) {
                 var html = '';
-                for(i =0; i< data.length; i++){
-                    html += '<li class = "list-group-item">'+data[i]+'</li>';
+                for (i = 0; i < data.length; i++) {
+                    html += '<li class = "list-group-item">' + data[i] + '</li>';
                 }
                 $users.html(html);
             })
         });
+        function myEmojis() {
+            var emojisIcon = ['&#128512', '&#128513', '&#128514', '&#128515', '&#128516', '&#128517',
+                '&#128518', '&#128519', '&#128520', '&#128521', '&#128522', '&#128523', '&#128524',
+                '&#128525', '&#128526', '&#128527', '&#128528', '&#128529', '&#128530', '&#128531',
+                '&#128532', '&#128533', '&#128534', '&#128535', '&#128536', '&#128537', '&#128538',
+                '&#128539', '&#128540', '&#128541', '&#128542', '&#128543', '&#128544', '&#128545',
+                '&#128546', '&#128547', '&#128548', '&#128549', '&#128550', '&#128551', '&#128552',
+                '&#128553', '&#128554', '&#128555', '&#128556', '&#128557', '&#128558', '&#128559',
+                '&#128560', '&#128561', '&#128562', '&#128563', '&#128564', '&#128565', '&#128566'];
+            var emoji = '';
+            var $emojis = $('#emojis');
+
+            for (i = 0; i < emojisIcon.length; i++) {
+                emoji += `<span id="emojiIcon${i}" onclick="writeInTextBox(this.id)">${emojisIcon[i]}</span>`
+            }
+            $emojis.html(emoji);
+        }
+
+        function writeInTextBox(spanId) {
+            var $message = $('#message');
+            var value = document.getElementById(spanId);
+
+            $message.val($message.val() + value.textContent);
+        }
     </script>
 </body>
+
 </html>

@@ -1,0 +1,31 @@
+<html>
+
+<head>
+    <link rel="icon" href="/images.png">
+    <title>IO Chat</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+    <style>
+        body {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <form action="/socket/upload_image" method="post" enctype="multipart/form-data">
+                    <input type="file" name="img_url" accept="image/*" capture="user">
+                    <br />
+                    <input type="submit" value="Get Url">
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -16,7 +16,7 @@ const config = convict({
     // },
     server: {
         enableHttpsServer: {
-            doc: 'Enable https server.',
+            doc: 'Enable https server',
             format: Boolean,
             default: false
         },
@@ -67,21 +67,37 @@ const config = convict({
             format: Boolean,
             default: true
         },
-        static:{
-            directory:{
+        static: {
+            directory: {
                 doc: 'Static path for directory.',
                 format: String,
-                default: '/views'
+                default: '../public/uploads/'
             }
         },
-        bodyParser:{
-            limit:{
+        bodyParser: {
+            limit: {
                 doc: 'maximum request body size',
                 format: String,
                 default: '100mb'
             }
         }
+    },
+    baseUrl: {
+        doc: 'Base url for ip.',
+        format: String,
+        default: 'http://192.168.225.52:3002/'
+    },
+    multer: {
+        uploadDirectoryPath: {
+            doc: "Multer upload directory path",
+            format: String,
+            default: "./public/uploads/"
+
+        }
     }
 });
+
+// // Load environment dependent configuration
+// let env = config.get('env');
 
 module.exports = config;
