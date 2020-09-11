@@ -85,7 +85,7 @@ const config = convict({
     baseUrl: {
         doc: 'Base url for ip.',
         format: String,
-        default: 'http://192.168.225.52:3002/'
+        default: 'http://be94f51cd722.ngrok.io/'
     },
     multer: {
         uploadDirectoryPath: {
