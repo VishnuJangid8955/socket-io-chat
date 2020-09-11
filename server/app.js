@@ -51,7 +51,7 @@ app.get('/',(req, res) =>{
 app.set('port', config.get('server.http.port'));
 
 server.listen(app.get('port'), ()=>{
-    console.info(`Express server start on port: ${app.get('port')} with PROCESSID ${process.id}`);
+    console.info(`Express server start on port: ${app.get('port')} with PROCESSID ${process.pid}`);
     console.info(`Environment: ${config.get('env')}`);
 });
 
